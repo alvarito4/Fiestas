@@ -58,38 +58,40 @@
 
   let eventDate = null;
 
-  onSnapshot(doc(db, "evento", "datos"), (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
+  window.addEventListener("DOMContentLoaded", () => {
+    onSnapshot(doc(db, "evento", "datos"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
 
-      document.getElementById("fechaTexto").innerText = data.fecha;
-      document.getElementById("horaTexto").innerText = data.hora;
-      document.getElementById("descripcion").innerText = data.descripcion;
-      document.getElementById("ubicacion").innerText = data.ubicacion;
+        document.getElementById("fechaTexto").innerText = data.fecha;
+        document.getElementById("horaTexto").innerText = data.hora;
+        document.getElementById("descripcion").innerText = data.descripcion;
+        document.getElementById("ubicacion").innerText = data.ubicacion;
 
-      const encoded = encodeURIComponent(data.ubicacion);
-      document.getElementById("mapaContainer").innerHTML =
-        `<iframe width="100%" height="100%" style="border:0;" loading="lazy"
-          src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encoded}">
-        </iframe>`;
+        const encoded = encodeURIComponent(data.ubicacion);
+        document.getElementById("mapaContainer").innerHTML =
+          `<iframe width="100%" height="100%" style="border:0;" loading="lazy"
+            src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encoded}">
+          </iframe>`;
 
-      eventDate = new Date(`${data.fecha}T${data.hora}`).getTime();
-    }
+        eventDate = new Date(`${data.fecha}T${data.hora}`).getTime();
+      }
+    });
+
+    setInterval(() => {
+      if (!eventDate) return;
+
+      const now = Date.now();
+      const distance = eventDate - now;
+
+      if (distance < 0) return;
+
+      document.getElementById("days").innerText = Math.floor(distance / (1000*60*60*24));
+      document.getElementById("hours").innerText = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+      document.getElementById("minutes").innerText = Math.floor((distance%(1000*60*60))/(1000*60));
+      document.getElementById("seconds").innerText = Math.floor((distance%(1000*60))/1000);
+    }, 1000);
   });
-
-  setInterval(() => {
-    if (!eventDate) return;
-
-    const now = Date.now();
-    const distance = eventDate - now;
-
-    if (distance < 0) return;
-
-    document.getElementById("days").innerText = Math.floor(distance / (1000*60*60*24));
-    document.getElementById("hours").innerText = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
-    document.getElementById("minutes").innerText = Math.floor((distance%(1000*60*60))/(1000*60));
-    document.getElementById("seconds").innerText = Math.floor((distance%(1000*60))/1000);
-  }, 1000);
 </script>
 
 </body>
