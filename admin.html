@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Panel Admin</title>
+<style>
+  body { font-family: Arial; background:#111; color:white; text-align:center; padding:50px; }
+  input, textarea, button { padding:10px; margin:10px; font-size:1.1rem; width:300px; }
+  textarea { height:120px; }
+</style>
+</head>
+<body>
+
+<h1>Panel de Administración</h1>
+
+<h2>Editar contenido del evento</h2>
+
+<p>Fecha (formato: 2026-07-25):</p>
+<input id="fecha">
+
+<p>Hora (formato: 20:00:00):</p>
+<input id="hora">
+
+<p>Descripción del evento:</p>
+<textarea id="descripcion"></textarea>
+
+<p>Ubicación (texto):</p>
+<textarea id="ubicacion"></textarea>
+
+<p>Mapa (pega aquí el enlace embed de Google Maps, alguna pregunta a Alvaro😊):</p>
+<textarea id="mapa"></textarea>
+
+<button onclick="save()">Guardar cambios</button>
+<p id="msg"></p>
+
+<script>
+function save() {
+  localStorage.setItem("fecha", document.getElementById("fecha").value);
+  localStorage.setItem("hora", document.getElementById("hora").value);
+  localStorage.setItem("descripcion", document.getElementById("descripcion").value);
+  localStorage.setItem("ubicacion", document.getElementById("ubicacion").value);
+  localStorage.setItem("mapa", document.getElementById("mapa").value);
+
+  document.getElementById("msg").innerText = "Guardado correctamente";
+}
+</script>
+
+</body>
+</html>
