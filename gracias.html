@@ -10,22 +10,24 @@
       margin: 0;
       padding: 0;
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f0f2f5;
+      background: #0b0b0b;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      color: white;
     }
 
     .card {
-      background: white;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(14px);
       padding: 40px;
       width: 90%;
       max-width: 500px;
-      border-radius: 14px;
+      border-radius: 18px;
       text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      animation: fadeIn 0.4s ease;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      animation: fadeIn 0.6s ease;
     }
 
     @keyframes fadeIn {
@@ -35,31 +37,40 @@
 
     h1 {
       margin-top: 0;
-      font-size: 28px;
-      color: #222;
-      font-weight: 600;
+      font-size: 32px;
+      font-weight: 700;
     }
 
     p {
-      font-size: 17px;
-      color: #555;
+      font-size: 18px;
+      opacity: 0.9;
       margin-bottom: 25px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 180px; /* mapa pequeño */
+      border: 0;
+      border-radius: 14px;
+      margin-bottom: 25px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
 
     a {
       display: inline-block;
       padding: 12px 22px;
-      background: #0078ff;
-      color: white;
+      background: linear-gradient(135deg, #00c6ff, #0078ff);
+      color: black;
       text-decoration: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: 700;
       transition: 0.2s;
     }
 
     a:hover {
-      background: #005fcc;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
   </style>
 </head>
@@ -68,8 +79,15 @@
 
 <div class="card">
   <h1>¡Gracias!</h1>
-  <p>Tu información se ha enviado correctamente.  
-     Pronto nos pondremos en contacto contigo.</p>
+  <p>Tu inscripción se ha enviado correctamente.  
+     Nos vemos en el evento.</p>
+
+  <!-- MAPA PEQUEÑO -->
+  <!-- Pega aquí tu iframe del mapa -->
+  <!-- Ejemplo:
+  <iframe src="TU_IFRAME_AQUI"></iframe>
+  -->
+  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4102.179026161607!2d-1.9378504233205347!3d37.25053957212224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7ad357429def7d%3A0xee14916799689ca0!2sCervecer%C3%ADa%20Ancla2!5e1!3m2!1ses!2ses!4v1768515313117!5m2!1ses!2ses" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
   <a href="index.html">Volver al inicio</a>
 </div>
