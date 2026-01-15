@@ -13,7 +13,6 @@
       color: white;
     }
 
-    /* HERO PROFESIONAL */
     .hero {
       position: relative;
       height: 55vh;
@@ -52,7 +51,6 @@
       margin-top: 12px;
     }
 
-    /* TARJETA GLASSMORPHISM */
     .contenedor {
       max-width: 900px;
       margin: -70px auto 40px auto;
@@ -88,12 +86,11 @@
       box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
 
-    /* FORMULARIO INSCRIPCIÓN */
     .formulario {
       margin-top: 35px;
     }
 
-    input {
+    .formulario input {
       width: 100%;
       padding: 14px;
       margin: 12px 0;
@@ -105,11 +102,11 @@
       backdrop-filter: blur(6px);
     }
 
-    input::placeholder {
+    .formulario input::placeholder {
       color: #ddd;
     }
 
-    button {
+    .formulario button {
       width: 100%;
       padding: 16px;
       margin-top: 10px;
@@ -124,7 +121,7 @@
       transition: 0.2s;
     }
 
-    button:hover {
+    .formulario button:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
@@ -138,7 +135,6 @@
 
 <body>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-content">
     <h1 id="titulo">Cargando...</h1>
@@ -146,19 +142,19 @@
   </div>
 </div>
 
-<!-- TARJETA -->
 <div class="contenedor">
 
   <h2>Detalles del evento</h2>
 
   <p class="dato">📅 Fecha: <span id="fecha"></span></p>
   <p class="dato">⏰ Hora: <span id="hora"></span></p>
+  <p class="dato">📍 Lugar: <strong id="lugar">Por confirmar</strong></p>
+  <p class="dato">🎉 Organiza: Cervecería Ancla2</p>
 
   <h2>Ubicación</h2>
 
-  <!-- MAPA -->
-  <!-- PEGA AQUÍ TU IFRAME DEL MAPA -->
-  <!-- EJEMPLO:
+  <!-- MAPA: pega aquí tu iframe de Google Maps -->
+  <!-- Ejemplo:
   <iframe src="TU_IFRAME_AQUI"></iframe>
   -->
   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4102.179026161607!2d-1.9378504233205347!3d37.25053957212224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7ad357429def7d%3A0xee14916799689ca0!2sCervecer%C3%ADa%20Ancla2!5e1!3m2!1ses!2ses!4v1768515313117!5m2!1ses!2ses" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -166,9 +162,17 @@
   <h2>Inscripción</h2>
 
   <div class="formulario">
-    <input id="nombre" placeholder="Tu nombre">
-    <input id="personas" placeholder="Número de personas">
-    <button onclick="enviar()">Confirmar asistencia</button>
+    <form id="formInscripcion" action="https://formsubmit.co/TU_CORREO_AQUI" method="POST">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_subject" value="Nueva inscripción para la fiesta Ancla2">
+      <input type="hidden" name="_next" value="https://TU_DOMINIO/gracias.html">
+
+      <input id="nombre" name="Nombre" placeholder="Tu nombre" required>
+      <input id="personas" name="Personas" placeholder="Número de personas" required>
+
+      <button type="submit">Confirmar asistencia</button>
+    </form>
   </div>
 
 </div>
@@ -189,18 +193,21 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const ref = doc(db, "evento", "info");
+  const refEvento = doc(db, "evento", "info");
 
-  onSnapshot(ref, (snap) => {
+  onSnapshot(refEvento, (snap) => {
     if (!snap.exists()) return;
     const d = snap.data();
-    document.getElementById("titulo").textContent = d.titulo;
-    document.getElementById("descripcion").textContent = d.descripcion;
-    document.getElementById("fecha").textContent = d.fecha;
-    document.getElementById("hora").textContent = d.hora;
+    document.getElementById("titulo").textContent = d.titulo || "";
+    document.getElementById("descripcion").textContent = d.descripcion || "";
+    document.getElementById("fecha").textContent = d.fecha || "";
+    document.getElementById("hora").textContent = d.hora || "";
+    if (d.lugar) document.getElementById("lugar").textContent = d.lugar;
   });
 
-  window.enviar = async () => {
+  const form = document.getElementById("formInscripcion");
+
+  form.addEventListener("submit", async () => {
     const nombre = document.getElementById("nombre").value;
     const personas = document.getElementById("personas").value;
 
@@ -209,9 +216,7 @@
       personas,
       fecha: new Date()
     });
-
-    alert("Inscripción enviada correctamente");
-  };
+  });
 </script>
 
 </body>
