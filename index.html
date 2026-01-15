@@ -1,103 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fiesta Ancla2 🎉🔥</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiesta Ancla2</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#1a0033; color:white; margin:0; }
-    header { text-align:center; padding:100px 20px; background:#00000080; }
-    h1 { font-size:4rem; margin:0; }
-    .info { text-align:center; margin:40px auto; font-size:1.3rem; }
-    #mapaContainer { width:90%; max-width:800px; height:400px; margin:40px auto; border-radius:20px; overflow:hidden; }
-    .countdown { display:flex; justify-content:center; gap:20px; margin-top:30px; }
-    .countdown div { background:#ffffff20; padding:20px; border-radius:10px; min-width:100px; }
-    .countdown span { font-size:2.5rem; font-weight:bold; display:block; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+    .contenedor { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    iframe { width: 100%; height: 350px; border: 0; border-radius: 10px; }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>¡FIESTA ÉPICA!</h1>
-  <p>En Cervecería Ancla2</p>
-</header>
-
-<section class="info">
-  <p><strong>Fecha:</strong> <span id="fechaTexto"></span></p>
-  <p><strong>Hora:</strong> <span id="horaTexto"></span></p>
-  <p><strong>Ubicación:</strong> <span id="ubicacion"></span></p>
+<div class="contenedor">
+  <h1 id="titulo"></h1>
   <p id="descripcion"></p>
-</section>
+  <p><strong>Fecha:</strong> <span id="fecha"></span></p>
+  <p><strong>Hora:</strong> <span id="hora"></span></p>
 
-<div class="countdown">
-  <div><span id="days">00</span>Días</div>
-  <div><span id="hours">00</span>Horas</div>
-  <div><span id="minutes">00</span>Min</div>
-  <div><span id="seconds">00</span>Seg</div>
+  <h2>Ubicación</h2>
+
+  <!-- MAPA -->
+  <!-- Aquí pegas tu iframe tal cual -->
+  <!-- Ejemplo:
+  <iframe src="TU_IFRAME_AQUI"></iframe>
+  -->
+  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4102.179026161607!2d-1.9378504233205347!3d37.25053957212224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7ad357429def7d%3A0xee14916799689ca0!2sCervecer%C3%ADa%20Ancla2!5e1!3m2!1ses!2ses!4v1768515313117!5m2!1ses!2ses" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
 </div>
 
-<div id="mapaContainer"></div>
-
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyCY9XkCT3EBUtzyjT-WPxZRU32nsLV71HY",
+    apiKey: "TU_API_KEY",
     authDomain: "fiestas-ancla2.firebaseapp.com",
     projectId: "fiestas-ancla2",
-    storageBucket: "fiestas-ancla2.firebasestorage.app",
-    messagingSenderId: "972175520634",
-    appId: "1:972175520634:web:0662556b49a0082ed45cc3",
-    measurementId: "G-59TGFPGGFN"
+    storageBucket: "fiestas-ancla2.appspot.com",
+    messagingSenderId: "TU_ID",
+    appId: "TU_APP_ID"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  let eventDate = null;
+  const ref = doc(db, "evento", "info");
 
-  window.addEventListener("DOMContentLoaded", () => {
-
-    // 🔥 LECTURA EN TIEMPO REAL
-    onSnapshot(doc(db, "evento", "datos"), (docSnap) => {
-      if (!docSnap.exists()) return;
-
-      const data = docSnap.data();
-
-      // Actualizar texto
-      document.getElementById("fechaTexto").innerText = data.fecha;
-      document.getElementById("horaTexto").innerText = data.hora;
-      document.getElementById("descripcion").innerText = data.descripcion;
-      document.getElementById("ubicacion").innerText = data.ubicacion;
-
-      // Generar mapa automático
-      const encoded = encodeURIComponent(data.ubicacion);
-      document.getElementById("mapaContainer").innerHTML =
-        `<iframe width="100%" height="100%" style="border:0;" loading="lazy"
-          src="https://www.google.com/maps/embed/v1/place?key=${firebaseConfig.apiKey}&q=${encoded}">
-        </iframe>`;
-
-      // Actualizar fecha del contador
-      eventDate = new Date(`${data.fecha}T${data.hora}`).getTime();
-    });
-
-    // 🔥 CONTADOR
-    setInterval(() => {
-      if (!eventDate) return;
-
-      const now = Date.now();
-      const distance = eventDate - now;
-
-      if (distance < 0) return;
-
-      document.getElementById("days").innerText = Math.floor(distance / (1000*60*60*24));
-      document.getElementById("hours").innerText = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
-      document.getElementById("minutes").innerText = Math.floor((distance%(1000*60*60))/(1000*60));
-      document.getElementById("seconds").innerText = Math.floor((distance%(1000*60))/1000);
-    }, 1000);
-
+  onSnapshot(ref, (snap) => {
+    if (!snap.exists()) return;
+    const d = snap.data();
+    document.getElementById("titulo").textContent = d.titulo;
+    document.getElementById("descripcion").textContent = d.descripcion;
+    document.getElementById("fecha").textContent = d.fecha;
+    document.getElementById("hora").textContent = d.hora;
   });
 </script>
 
