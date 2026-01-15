@@ -26,9 +26,6 @@
 <p>Ubicación (texto):</p>
 <textarea id="ubicacion"></textarea>
 
-<p>Mapa (pega aquí el enlace embed de Google Maps):</p>
-<textarea id="mapa"></textarea>
-
 <button onclick="save()">Guardar cambios</button>
 <p id="msg"></p>
 
@@ -55,8 +52,7 @@ function save() {
     fecha: document.getElementById("fecha").value,
     hora: document.getElementById("hora").value,
     descripcion: document.getElementById("descripcion").value,
-    ubicacion: document.getElementById("ubicacion").value,
-    mapa: document.getElementById("mapa").value
+    ubicacion: document.getElementById("ubicacion").value
   }).then(() => {
     document.getElementById("msg").innerText = "Guardado correctamente ✔";
   });
