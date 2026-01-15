@@ -26,7 +26,7 @@
 <p>Ubicación (texto):</p>
 <textarea id="ubicacion"></textarea>
 
-<button onclick="save()">Guardar cambios</button>
+<button id="guardarBtn">Guardar cambios</button>
 <p id="msg"></p>
 
 <script type="module">
@@ -46,7 +46,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  window.save = async function () {
+  async function save() {
     await setDoc(doc(db, "evento", "datos"), {
       fecha: document.getElementById("fecha").value,
       hora: document.getElementById("hora").value,
@@ -55,7 +55,10 @@
     });
 
     document.getElementById("msg").innerText = "Guardado correctamente ✔";
-  };
+  }
+
+  // ⭐ ESTA LÍNEA ES LA QUE ARREGLA TODO
+  document.getElementById("guardarBtn").addEventListener("click", save);
 </script>
 
 </body>
