@@ -29,34 +29,33 @@
 <button onclick="save()">Guardar cambios</button>
 <p id="msg"></p>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCY9XkCT3EBUtzyjT-WPxZRU32nsLV71HY",
-  authDomain: "fiestas-ancla2.firebaseapp.com",
-  projectId: "fiestas-ancla2",
-  storageBucket: "fiestas-ancla2.firebasestorage.app",
-  messagingSenderId: "972175520634",
-  appId: "1:972175520634:web:708cd1b614c48c10d45cc3",
-  measurementId: "G-G51626F5SE"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyCY9XkCT3EBUtzyjT-WPxZRU32nsLV71HY",
+    authDomain: "fiestas-ancla2.firebaseapp.com",
+    projectId: "fiestas-ancla2",
+    storageBucket: "fiestas-ancla2.firebasestorage.app",
+    messagingSenderId: "972175520634",
+    appId: "1:972175520634:web:0662556b49a0082ed45cc3",
+    measurementId: "G-59TGFPGGFN"
+  };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-function save() {
-  db.collection("evento").doc("datos").set({
-    fecha: document.getElementById("fecha").value,
-    hora: document.getElementById("hora").value,
-    descripcion: document.getElementById("descripcion").value,
-    ubicacion: document.getElementById("ubicacion").value
-  }).then(() => {
+  window.save = async function () {
+    await setDoc(doc(db, "evento", "datos"), {
+      fecha: document.getElementById("fecha").value,
+      hora: document.getElementById("hora").value,
+      descripcion: document.getElementById("descripcion").value,
+      ubicacion: document.getElementById("ubicacion").value
+    });
+
     document.getElementById("msg").innerText = "Guardado correctamente ✔";
-  });
-}
+  };
 </script>
 
 </body>
