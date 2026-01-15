@@ -113,7 +113,7 @@
       transition: all 0.3s;
     }
     button:hover { background: #ff6699; transform: scale(1.05); }
-    #map {
+    #mapaContainer {
       height: 400px;
       border-radius: 20px;
       overflow: hidden;
@@ -152,33 +152,26 @@
 
   <section>
     <div class="info">
-      <p><strong>Fecha:</strong> Viernes 25 de Julio 2026</p>
-      <p><strong>Hora:</strong> 20:00 h</p>
-      <p><strong>Lugar:</strong> Cervecería Ancla2 – Cam. las Escuelas, 04629 Aljariz (Almería)</p>
-      <p>Trae buena vibra, ganas de bailar 🔥</p>
-      <p>(pero ven guapo/a 😉)</p>
+      <p><strong>Fecha:</strong> <span id="fechaTexto"></span></p>
+      <p><strong>Hora:</strong> <span id="horaTexto"></span></p>
+      <p><strong>Lugar:</strong> <span id="ubicacion"></span></p>
+      <p id="descripcion"></p>
     </div>
 
-    <div id="map">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4098.043763530265!2d-1.9352754999999997!3d37.25053959999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7ad357429def7d%3A0xee14916799689ca0!2sCervecer%C3%ADa%20Ancla2!5e1!3m2!1ses!2ses!4v1768500604784!5m2!1ses!2ses" 
-      width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
+    <div id="mapaContainer"></div>
   </section>
 
   <section>
     <h2 style="font-size:2.8rem; margin-bottom:30px;">¿Vienes o qué? Confirma ya</h2>
 
-    <!-- FORMULARIO FUNCIONANDO -->
     <form action="https://formsubmit.co/altro2robot@gmail.com" method="POST">
 
       <input type="text" name="name" placeholder="Tu nombre completo" required>
       <input type="number" name="guests" placeholder="¿Cuántos venís en total? (incluyéndote)" min="1" required>
 
-      <!-- Evitar captcha -->
       <input type="hidden" name="_captcha" value="false">
 
-      <!-- Redirección (CAMBIA ESTA URL POR LA TUYA DE GITHUB PAGES) -->
-      <input type="hidden" name="_next" value="https://TU_USUARIO.github.io/TU_REPO/gracias.html">
+      <input type="hidden" name="_next" value="https://alvarito4.github.io/Fiestas/gracias.html">
 
       <button type="submit">¡Confirmo! 🔥</button>
     </form>
@@ -190,8 +183,22 @@
   </footer>
 
   <script>
-    const eventDate = new Date("2026-07-25T20:00:00").getTime();
+    // Cargar valores del panel admin
+    let fecha = localStorage.getItem("fecha") || "2026-07-25";
+    let hora = localStorage.getItem("hora") || "20:00:00";
+    let descripcion = localStorage.getItem("descripcion") || "Trae buena vibra, ganas de bailar 🔥 (pero ven guapo/a 😉)";
+    let ubicacion = localStorage.getItem("ubicacion") || "Cervecería Ancla2 – Cam. las Escuelas, 04629 Aljariz (Almería)";
+    let mapa = localStorage.getItem("mapa") || `<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4098.043763530265!2d-1.9352754999999997!3d37.25053959999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7ad357429def7d%3A0xee14916799689ca0!2sCervecer%C3%ADa%20Ancla2!5e1!3m2!1ses!2ses!4v1768500604784!5m2!1ses!2ses" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
 
+    // Mostrar en pantalla
+    document.getElementById("fechaTexto").innerText = fecha;
+    document.getElementById("horaTexto").innerText = hora;
+    document.getElementById("descripcion").innerText = descripcion;
+    document.getElementById("ubicacion").innerText = ubicacion;
+    document.getElementById("mapaContainer").innerHTML = mapa;
+
+    // Cuenta atrás
+    const eventDate = new Date(`${fecha}T${hora}`).getTime();
 
     function updateCountdown() {
       const now = new Date().getTime();
