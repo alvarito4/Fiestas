@@ -1,64 +1,160 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Panel Admin</title>
-<style>
-  body { font-family: Arial; background:#111; color:white; text-align:center; padding:50px; }
-  input, textarea, button { padding:10px; margin:10px; font-size:1.1rem; width:300px; }
-  textarea { height:120px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración – Ancla2</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 40px;
+    }
+
+    .panel {
+      width: 95%;
+      max-width: 700px;
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 26px;
+      text-align: center;
+      color: #222;
+      font-weight: 600;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 15px;
+      display: block;
+      color: #333;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: 0.2s;
+      background: #fafafa;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #0078ff;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(0,120,255,0.15);
+      outline: none;
+    }
+
+    textarea {
+      height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      background: #0078ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #005fcc;
+    }
+
+    #estado {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #007800;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>Panel de Administración</h1>
-<h2>Editar contenido del evento</h2>
+<div class="panel">
+  <h1>Panel de Administración</h1>
 
-<p>Fecha (formato: 2026-07-25):</p>
-<input id="fecha">
+  <label for="titulo">Título del evento</label>
+  <input id="titulo" placeholder="Ej: Fiesta en la carpa">
 
-<p>Hora (formato: 20:00:00):</p>
-<input id="hora">
+  <label for="descripcion">Descripción</label>
+  <textarea id="descripcion" placeholder="Detalles del evento..."></textarea>
 
-<p>Descripción del evento:</p>
-<textarea id="descripcion"></textarea>
+  <label for="fecha">Fecha</label>
+  <input id="fecha" placeholder="Ej: 20/01/2026">
 
-<p>Ubicación (texto):</p>
-<textarea id="ubicacion"></textarea>
+  <label for="hora">Hora</label>
+  <input id="hora" placeholder="Ej: 23:00">
 
-<button id="guardarBtn">Guardar cambios</button>
-<p id="msg"></p>
+  <button id="guardarBtn">Guardar cambios</button>
+
+  <p id="estado">Guardado correctamente ✔</p>
+</div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyCY9XkCT3EBUtzyjT-WPxZRU32nsLV71HY",
+    apiKey: "TU_API_KEY",
     authDomain: "fiestas-ancla2.firebaseapp.com",
     projectId: "fiestas-ancla2",
-    storageBucket: "fiestas-ancla2.firebasestorage.app",
-    messagingSenderId: "972175520634",
-    appId: "1:972175520634:web:0662556b49a0082ed45cc3",
-    measurementId: "G-59TGFPGGFN"
+    storageBucket: "fiestas-ancla2.appspot.com",
+    messagingSenderId: "TU_ID",
+    appId: "TU_APP_ID"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  async function save() {
-    await setDoc(doc(db, "evento", "datos"), {
-      fecha: document.getElementById("fecha").value,
-      hora: document.getElementById("hora").value,
+  const estado = document.getElementById("estado");
+
+  document.getElementById("guardarBtn").addEventListener("click", async () => {
+    const data = {
+      titulo: document.getElementById("titulo").value,
       descripcion: document.getElementById("descripcion").value,
-      ubicacion: document.getElementById("ubicacion").value
-    });
+      fecha: document.getElementById("fecha").value,
+      hora: document.getElementById("hora").value
+    };
 
-    document.getElementById("msg").innerText = "Guardado correctamente ✔";
-  }
+    await setDoc(doc(db, "evento", "info"), data);
 
-  // ⭐ ESTA LÍNEA ES LA QUE ARREGLA TODO
-  document.getElementById("guardarBtn").addEventListener("click", save);
+    estado.style.opacity = "1";
+    estado.textContent = "Guardado correctamente ✔";
+
+    setTimeout(() => estado.style.opacity = "0", 2500);
+  });
 </script>
 
 </body>
