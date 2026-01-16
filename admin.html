@@ -217,6 +217,15 @@
     collection, onSnapshot, deleteDoc 
   } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // Comprobar si el usuario está logeado
+    const isLoggedIn = localStorage.getItem("loggedIn");
+
+    // Si no está logeado, lo mandamos a login.html
+    if (!isLoggedIn || isLoggedIn !== "true") {
+        window.location.href = "login.html";
+    }
+
+  
   const firebaseConfig = {
     apiKey: "TU_API_KEY",
     authDomain: "fiestas-ancla2.firebaseapp.com",
