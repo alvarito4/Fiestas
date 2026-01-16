@@ -175,12 +175,6 @@
   <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
 </div>
 
-<!-- PROTECCIÓN -->
-<script>
-  if (localStorage.getItem("admin") !== "true") {
-    window.location.href = "login.html";
-  }
-
   function logout() {
     localStorage.removeItem("admin");
     window.location.href = "login.html";
