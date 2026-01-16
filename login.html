@@ -90,7 +90,7 @@ async function login() {
 
   if (data.ok) {
     localStorage.setItem("admin", "true");
-    window.location.href = "admin.html";
+    window.location.href = "/Fiestas/admin.html";
   } else {
     document.getElementById("error").textContent = "Credenciales incorrectas";
   }
