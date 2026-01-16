@@ -2,29 +2,66 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acceso Admin</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 350px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: #0078ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    p { color: red; text-align: center; }
+  </style>
 </head>
+
 <body>
 
-<h2>Panel Admin</h2>
+<div class="login-box">
+  <h2 style="text-align:center;">Acceso Admin</h2>
 
-<form onsubmit="return login()">
-  <label>Usuario:</label>
-  <input type="text" id="user" required><br><br>
+  <input id="user" placeholder="Usuario">
+  <input id="pass" type="password" placeholder="Contraseña">
 
-  <label>Contraseña:</label>
-  <input type="password" id="pass" required><br><br>
+  <button onclick="login()">Entrar</button>
 
-  <button type="submit">Entrar</button>
-</form>
-
-<p id="error" style="color:red;"></p>
+  <p id="error"></p>
+</div>
 
 <script>
-  // Cambia estos valores
-  const USER = "admin"; 
-  const PASS_HASH = "PON_AQUI_EL_HASH_SHA256";
+  const USER = "Gaby";
+  const PASS_HASH = "8f9f3c9f2e7a4d5e3b1a0b8c7c0f4a3d3e2b1c9d8f7e6a5b4c3d2e1f0a9b8c7";
 
   function login() {
     const u = document.getElementById("user").value;
@@ -35,6 +72,14 @@
     if (u === USER && hash === PASS_HASH) {
       localStorage.setItem("admin", "true");
       window.location.href = "admin.html";
+    } else {
+      document.getElementById("error").textContent = "Credenciales incorrectas";
+    }
+  }
+</script>
+
+</body>
+</html>      window.location.href = "admin.html";
     } else {
       document.getElementById("error").textContent = "Credenciales incorrectas";
     }
