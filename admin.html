@@ -105,12 +105,38 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
+
+    .logout-btn {
+      background:#444;
+      color:white;
+      padding:10px 16px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      float:right;
+      margin-bottom:20px;
+    }
   </style>
 </head>
 
 <body>
 
+<!-- 🔐 Protección del panel -->
+<script>
+  if (localStorage.getItem("admin") !== "true") {
+    window.location.href = "login.html"; // Cambia si tu login tiene otro nombre
+  }
+
+  function logout() {
+    localStorage.removeItem("admin");
+    window.location.href = "login.html";
+  }
+</script>
+
 <div class="panel">
+
+  <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+
   <h1>Panel de Administración</h1>
 
   <h2>Datos del evento</h2>
