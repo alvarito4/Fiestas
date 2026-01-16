@@ -9,7 +9,7 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: Arial, sans-serif;
       background: #f5f5f7;
       display: flex;
       justify-content: center;
@@ -24,20 +24,11 @@
       padding: 35px;
       border-radius: 22px;
       box-shadow: 0 10px 35px rgba(0,0,0,0.08);
-      animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     h2 {
-      margin: 0 0 25px 0;
       text-align: center;
-      font-size: 24px;
-      font-weight: 600;
-      color: #1c1c1e;
+      margin-bottom: 25px;
     }
 
     input {
@@ -47,15 +38,6 @@
       border: 1px solid #d2d2d7;
       border-radius: 12px;
       font-size: 16px;
-      background: #fafafa;
-      transition: 0.2s;
-    }
-
-    input:focus {
-      border-color: #007aff;
-      background: white;
-      box-shadow: 0 0 0 4px rgba(0,122,255,0.15);
-      outline: none;
     }
 
     button {
@@ -69,11 +51,6 @@
       border: none;
       border-radius: 14px;
       cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #0063cc;
     }
 
     #error {
@@ -99,25 +76,25 @@
   <p id="error"></p>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
-
 <script>
-  const USER = "Gaby";
-  const PASS_HASH = "e042245bd6779666a7b921ddbb450e47c5950c93227f4579a61134b709fb1461";
+async function login() {
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
 
-  function login() {
-    const u = document.getElementById("user").value;
-    const p = document.getElementById("pass").value;
+  const res = await fetch("/.netlify/functions/login", {
+    method: "POST",
+    body: JSON.stringify({ user, pass })
+  });
 
-    const hash = sha256(p);
+  const data = await res.json();
 
-    if (u === USER && hash === PASS_HASH) {
-      localStorage.setItem("admin", "true");
-      window.location.href = "/Fiestas/admin.html";
-    } else {
-      document.getElementById("error").textContent = "Credenciales incorrectas";
-    }
+  if (data.ok) {
+    localStorage.setItem("admin", "true");
+    window.location.href = "admin.html";
+  } else {
+    document.getElementById("error").textContent = "Credenciales incorrectas";
   }
+}
 </script>
 
 </body>
