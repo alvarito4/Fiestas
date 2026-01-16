@@ -3,53 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acceso Admin</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+  <title>Acceso Admin – Ancla2</title>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f5f5f7;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
+
     .login-box {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       width: 90%;
-      max-width: 350px;
+      max-width: 380px;
+      background: white;
+      padding: 35px;
+      border-radius: 22px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+      animation: fadeIn 0.4s ease;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin: 0 0 25px 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: #1c1c1e;
+    }
+
     input {
       width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 14px;
+      margin-top: 12px;
+      border: 1px solid #d2d2d7;
+      border-radius: 12px;
+      font-size: 16px;
+      background: #fafafa;
+      transition: 0.2s;
     }
+
+    input:focus {
+      border-color: #007aff;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(0,122,255,0.15);
+      outline: none;
+    }
+
     button {
       width: 100%;
-      margin-top: 20px;
-      padding: 12px;
-      background: #0078ff;
+      margin-top: 25px;
+      padding: 15px;
+      font-size: 17px;
+      font-weight: 600;
+      background: #007aff;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 14px;
       cursor: pointer;
-      font-size: 16px;
+      transition: 0.2s;
     }
-    p { color: red; text-align: center; }
+
+    button:hover {
+      background: #0063cc;
+    }
+
+    #error {
+      margin-top: 15px;
+      text-align: center;
+      color: #ff3b30;
+      font-weight: 600;
+      min-height: 20px;
+    }
   </style>
 </head>
 
 <body>
 
 <div class="login-box">
-  <h2 style="text-align:center;">Acceso Admin</h2>
+  <h2>Acceso Admin</h2>
 
   <input id="user" placeholder="Usuario">
   <input id="pass" type="password" placeholder="Contraseña">
@@ -59,9 +99,11 @@
   <p id="error"></p>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+
 <script>
   const USER = "Gaby";
-  const PASS_HASH = "e042245bd6779666a7b921ddbb450e47c5950c93227f4579a61134b709fb1461";
+  const PASS_HASH = "AQUÍ_TU_HASH_SHA256";
 
   function login() {
     const u = document.getElementById("user").value;
@@ -71,20 +113,10 @@
 
     if (u === USER && hash === PASS_HASH) {
       localStorage.setItem("admin", "true");
-      window.location.href = "admin.html";
+      window.location.href = "/Fiestas/admin.html";
     } else {
       document.getElementById("error").textContent = "Credenciales incorrectas";
     }
-  }
-</script>
-
-</body>
-</html>      window.location.href = "admin.html";
-    } else {
-      document.getElementById("error").textContent = "Credenciales incorrectas";
-    }
-
-    return false;
   }
 </script>
 
