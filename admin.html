@@ -3,58 +3,281 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Admin – Ancla2</title>
-
-  <script>
-    if (localStorage.getItem("admin") !== "true") {
-      window.location.href = "login.html";
-    }
-  </script>
+  <title>Panel de Administración – Ancla2</title>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: #f5f5f7;
+      padding: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 40px;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .panel {
+      width: 95%;
+      max-width: 800px;
       background: white;
-      padding: 15px 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 26px;
+      text-align: center;
+      color: #222;
+      font-weight: 600;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      color: #222;
+      font-weight: 600;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 15px;
+      display: block;
+      color: #333;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: 0.2s;
+      background: #fafafa;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #0078ff;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(0,120,255,0.15);
+      outline: none;
+    }
+
+    textarea {
+      height: 120px;
+      resize: vertical;
     }
 
     button {
-      padding: 10px 18px;
-      background: #ff3b30;
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      background: #0078ff;
       color: white;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #005fcc;
+    }
+
+    #estado {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #007800;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .logout-btn {
+      background:#444;
+      color:white;
+      padding:10px 16px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      float:right;
+      margin-bottom:20px;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h2>Panel de Administración</h2>
-  <button onclick="logout()">Cerrar sesión</button>
-</header>
-
-<p style="margin-top: 20px;">Bienvenido al panel privado de Ancla2.</p>
-
+<!-- 🔐 Protección del panel -->
 <script>
-function logout() {
-  localStorage.removeItem("admin");
-  window.location.href = "login.html";
-}
+  if (localStorage.getItem("admin") !== "true") {
+    window.location.href = "login.html"; // Cambia si tu login tiene otro nombre
+  }
+
+  function logout() {
+    localStorage.removeItem("admin");
+    window.location.href = "login.html";
+  }
+</script>
+
+<div class="panel">
+
+  <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+
+  <h1>Panel de Administración</h1>
+
+  <h2>Datos del evento</h2>
+
+  <label for="titulo">Título del evento</label>
+  <input id="titulo" placeholder="Ej: Fiesta en la carpa">
+
+  <label for="descripcion">Descripción</label>
+  <textarea id="descripcion" placeholder="Detalles del evento..."></textarea>
+
+  <label for="fecha">Fecha</label>
+  <input id="fecha" placeholder="Ej: 20/01/2026">
+
+  <label for="hora">Hora</label>
+  <input id="hora" placeholder="Ej: 23:00">
+
+  <label for="lugar">Lugar</label>
+  <input id="lugar" placeholder="Ej: Playa de Vera, carpa, bar...">
+
+  <button id="guardarBtn">Guardar cambios</button>
+  <p id="estado">Guardado correctamente ✔</p>
+
+  <h2>Lista de asistencias</h2>
+
+  <div id="listaAsistencias" 
+       style="background: rgba(255,255,255,0.07);
+              padding: 20px;
+              border-radius: 12px;
+              box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+              margin-top: 10px;">
+    <p>Cargando asistencias...</p>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { 
+    getFirestore, doc, setDoc, getDoc,
+    collection, onSnapshot, deleteDoc 
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "fiestas-ancla2.firebaseapp.com",
+    projectId: "fiestas-ancla2",
+    storageBucket: "fiestas-ancla2.appspot.com",
+    messagingSenderId: "TU_ID",
+    appId: "TU_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const refEvento = doc(db, "evento", "info");
+  const estado = document.getElementById("estado");
+
+  async function cargarEvento() {
+    const snap = await getDoc(refEvento);
+    if (!snap.exists()) return;
+    const d = snap.data();
+    document.getElementById("titulo").value = d.titulo || "";
+    document.getElementById("descripcion").value = d.descripcion || "";
+    document.getElementById("fecha").value = d.fecha || "";
+    document.getElementById("hora").value = d.hora || "";
+    document.getElementById("lugar").value = d.lugar || "";
+  }
+
+  cargarEvento();
+
+  document.getElementById("guardarBtn").addEventListener("click", async () => {
+    const data = {
+      titulo: document.getElementById("titulo").value,
+      descripcion: document.getElementById("descripcion").value,
+      fecha: document.getElementById("fecha").value,
+      hora: document.getElementById("hora").value,
+      lugar: document.getElementById("lugar").value
+    };
+
+    await setDoc(refEvento, data);
+    estado.style.opacity = "1";
+    estado.textContent = "Guardado correctamente ✔";
+    setTimeout(() => estado.style.opacity = "0", 2500);
+  });
+
+  const lista = document.getElementById("listaAsistencias");
+
+  onSnapshot(collection(db, "inscripciones"), (snap) => {
+    if (snap.empty) {
+      lista.innerHTML = "<p>No hay inscripciones todavía.</p>";
+      return;
+    }
+
+    let html = "";
+
+    snap.forEach(docu => {
+      const d = docu.data();
+      const fecha = d.fecha?.seconds ? new Date(d.fecha.seconds * 1000).toLocaleString() : "";
+
+      html += `
+        <div style="
+          padding: 14px;
+          margin-bottom: 12px;
+          background: rgba(0,0,0,0.03);
+          border-radius: 10px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        ">
+          <div>
+            <strong>${d.nombre}</strong><br>
+            <span style="opacity:0.8;">Personas: ${d.personas}</span><br>
+            <span style="opacity:0.6; font-size:13px;">${fecha}</span>
+          </div>
+
+          <button onclick="eliminarAsistencia('${docu.id}')" 
+            style="
+              background: #ff4d4d;
+              border: none;
+              padding: 8px 14px;
+              border-radius: 8px;
+              color: white;
+              font-weight: 600;
+              cursor: pointer;
+              transition: 0.2s;
+            "
+            onmouseover="this.style.background='#e60000'"
+            onmouseout="this.style.background='#ff4d4d'">
+            Eliminar
+          </button>
+        </div>
+      `;
+    });
+
+    lista.innerHTML = html;
+  });
+
+  window.eliminarAsistencia = async (id) => {
+    if (confirm("¿Seguro que quieres eliminar esta inscripción?")) {
+      await deleteDoc(doc(db, "inscripciones", id));
+    }
+  };
 </script>
 
 </body>
