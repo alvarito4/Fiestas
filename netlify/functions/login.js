@@ -11,12 +11,18 @@ export async function handler(event) {
   if (user === ADMIN_USER && hash === ADMIN_PASS_HASH) {
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ ok: true })
     };
   }
 
   return {
     statusCode: 401,
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({ ok: false, error: "Credenciales incorrectas" })
   };
 }
