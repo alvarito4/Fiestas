@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Acceso Admin</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+</head>
+<body>
+
+<h2>Panel Admin</h2>
+
+<form onsubmit="return login()">
+  <label>Usuario:</label>
+  <input type="text" id="user" required><br><br>
+
+  <label>Contraseña:</label>
+  <input type="password" id="pass" required><br><br>
+
+  <button type="submit">Entrar</button>
+</form>
+
+<p id="error" style="color:red;"></p>
+
+<script>
+  // Cambia estos valores
+  const USER = "admin"; 
+  const PASS_HASH = "PON_AQUI_EL_HASH_SHA256";
+
+  function login() {
+    const u = document.getElementById("user").value;
+    const p = document.getElementById("pass").value;
+
+    const hash = sha256(p);
+
+    if (u === USER && hash === PASS_HASH) {
+      localStorage.setItem("admin", "true");
+      window.location.href = "admin.html";
+    } else {
+      document.getElementById("error").textContent = "Credenciales incorrectas";
+    }
+
+    return false;
+  }
+</script>
+
+</body>
+</html>
